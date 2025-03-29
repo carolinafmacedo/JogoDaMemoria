@@ -1,6 +1,5 @@
 package com.jogo.memoria.jogo_da_memoria.model;
 
-import javax.swing.JButton; // Importando JButton
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,108 +8,94 @@ public class GameBoard {
     private List<GameBoardObserver> observers;
     private Card firstFlippedCard;
     private Card secondFlippedCard;
-    private int flippedCount;
     private int attemptsLeft;
     private boolean gameWon;
-    private List<JButton> observerButtons; // Lista de botões para a interface
+    private boolean gameLost;
 
     public GameBoard(CardFactory cardFactory) {
-        this.cards = cardFactory.createCards(); // Usando o CardFactory para criar as cartas
+        this.cards = cardFactory.createCards();
         this.observers = new ArrayList<>();
-        this.firstFlippedCard = null;
-        this.secondFlippedCard = null;
-        this.flippedCount = 0;
-        this.attemptsLeft = 6; // Número de tentativas
+        this.attemptsLeft = 6;
         this.gameWon = false;
-        this.observerButtons = new ArrayList<>();
+        this.gameLost = false;
     }
 
-    // Adiciona um observer (controller)
     public void addObserver(GameBoardObserver observer) {
         observers.add(observer);
     }
 
-    // Adiciona um botão para o observer
-    public void addObserverButton(JButton button) {
-        observerButtons.add(button);
-    }
-
-    // Método para virar uma carta
     public void flipCard(int index) {
-        // Evita virar cartas já viradas ou se o jogo acabou
-        Card card = cards.get(index);
-        if (card.isFlipped() || attemptsLeft <= 0 || gameWon) {
-            return; // Ignora se já estiver virada ou o jogo acabou
-        }
+        if (attemptsLeft <= 0 || gameWon || gameLost) return;
 
-        card.flip(); // Vira a carta
+        Card card = cards.get(index);
+        if (card.isFlipped() || (firstFlippedCard != null && secondFlippedCard != null)) return;
+
+        card.flip();
+
         if (firstFlippedCard == null) {
             firstFlippedCard = card;
         } else {
             secondFlippedCard = card;
-            // Verifica se as cartas formaram um par
-            boolean matchFound = firstFlippedCard.getValue() == secondFlippedCard.getValue();
-            notifyObservers(matchFound);
+            checkMatch();
+        }
 
-            if (!matchFound) {
-                // Se não houver correspondência, inverte as cartas após um tempo
-                resetFlippedCards();
-            } else {
-                flippedCount += 2; // Atualiza o contador de cartas viradas corretamente
-                if (flippedCount == cards.size()) {
-                    gameWon = true; // O jogo foi ganho quando todas as cartas foram viradas
+        notifyObservers();
+    }
+
+    private void checkMatch() {
+        if (firstFlippedCard.getValue() == secondFlippedCard.getValue()) {
+            firstFlippedCard.setMatched(true);
+            secondFlippedCard.setMatched(true);
+            resetCards(false); // Não precisa virar de volta
+        } else {
+            attemptsLeft--;
+            new Thread(() -> {
+                try {
+                    Thread.sleep(1000);
+                    resetCards(true); // Vira as cartas de volta
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            }
-            attemptsLeft--; // Diminui as tentativas restantes
+            }).start();
+        }
+
+        if (cards.stream().allMatch(Card::isMatched)) {
+            gameWon = true;
+        } else if (attemptsLeft == 0) {
+            gameLost = true;
         }
     }
 
-    // Método para reverter as cartas após 1 segundo
-    private void resetFlippedCards() {
-        new Thread(() -> {
-            try {
-                Thread.sleep(1000); // Espera 1 segundo antes de virar as cartas de volta
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            firstFlippedCard.flip(); // Vira as cartas de volta
+    private void resetCards(boolean flipBack) {
+        if (flipBack) {
+            firstFlippedCard.flip();
             secondFlippedCard.flip();
-            firstFlippedCard = null; // Reseta as cartas viradas
-            secondFlippedCard = null;
-            notifyObservers(false); // Informa que não houve par
-        }).start();
-    }
-
-    // Método para notificar os observers (por exemplo, o controlador)
-    private void notifyObservers(boolean matchFound) {
-        for (GameBoardObserver observer : observers) {
-            observer.update(matchFound);
         }
+        firstFlippedCard = null;
+        secondFlippedCard = null;
+        notifyObservers();
     }
 
-    public boolean isGameWon() {
-        return gameWon;
-    }
-
-    public int getAttemptsLeft() {
-        return attemptsLeft;
+    private void notifyObservers() {
+        for (GameBoardObserver observer : observers) {
+            observer.update(false);
+        }
     }
 
     public List<Card> getCards() {
         return cards;
     }
 
-    public Card getFirstFlippedCard() {
-        return firstFlippedCard;
+    public int getAttemptsLeft() {
+        return attemptsLeft;
     }
 
-    public Card getSecondFlippedCard() {
-        return secondFlippedCard;
+    public boolean isGameWon() {
+        return gameWon;
     }
 
-    // Adiciona os botões observados
-    public List<JButton> getObserverButtons() {
-        return observerButtons;
+    public boolean isGameLost() {
+        return gameLost;
     }
 }
 

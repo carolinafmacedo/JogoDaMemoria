@@ -9,10 +9,10 @@ public class Main {
     public static void main(String[] args) {
         CardFactory cardFactory = new CardFactory();
         GameBoard gameBoard = new GameBoard(cardFactory);
-        MemoryGameController controller = new MemoryGameController(gameBoard);
-
-        MemoryGameGUI gui = new MemoryGameGUI(controller);
-        gui.setVisible(true);
+        MemoryGameGUI gui = new MemoryGameGUI();
+        MemoryGameController controller = new MemoryGameController(gameBoard, gui);
+        
+        gui.setController(controller);
+        gui.initializeUI();
     }
 }
-
