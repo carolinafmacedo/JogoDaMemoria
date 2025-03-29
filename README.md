@@ -19,13 +19,13 @@ O jogo é composto por um tabuleiro 4x4, e o jogador tem um número limitado de 
 
 # 💻 Padrões de Projeto Aplicados
 1. Observer Pattern 🧐
-O Observer Pattern foi utilizado para notificar o controlador sempre que o estado do tabuleiro mudar (ex: quando uma carta é virada). A classe GameBoard atua como o Subject (Sujeito), enquanto a classe MemoryGameController é o Observer (Observador).
-
+- O Observer Pattern foi utilizado para notificar o controlador sempre que o estado do tabuleiro mudar (ex: quando uma carta é virada). A classe GameBoard atua como o Subject (Sujeito), enquanto a classe MemoryGameController é o Observer (Observador).
+  
 2. Factory Pattern 🏭
-O Factory Pattern foi utilizado para a criação das cartas, centralizando a lógica de criação na classe CardFactory. Isso permite que a criação das cartas seja modular e facilmente extensível.
+- O Factory Pattern foi utilizado para a criação das cartas, centralizando a lógica de criação na classe CardFactory. Isso permite que a criação das cartas seja modular e facilmente extensível.
 
 3. Singleton Pattern (Padrão Singleton) 🔒
-O Singleton garante que o jogo tenha uma única instância de GameBoard e seja acessível globalmente.
+- O Singleton garante que o jogo tenha uma única instância de GameBoard e seja acessível globalmente.
 
 4. Command Pattern (Padrão de Comando) 📜
-O Command Pattern foi aplicado para encapsular ações como "virar uma carta".
+- O Command Pattern foi aplicado para encapsular ações como "virar uma carta".
