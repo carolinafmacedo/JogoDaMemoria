@@ -8,16 +8,16 @@ public class GameBoard {
     private List<GameBoardObserver> observers;
     private Card firstFlippedCard;
     private Card secondFlippedCard;
+    private int flippedCount;
     private int attemptsLeft;
-    private boolean gameWon;
-    private boolean gameLost;
 
     public GameBoard(CardFactory cardFactory) {
         this.cards = cardFactory.createCards();
         this.observers = new ArrayList<>();
+        this.firstFlippedCard = null;
+        this.secondFlippedCard = null;
+        this.flippedCount = 0;
         this.attemptsLeft = 6;
-        this.gameWon = false;
-        this.gameLost = false;
     }
 
     public void addObserver(GameBoardObserver observer) {
@@ -25,10 +25,10 @@ public class GameBoard {
     }
 
     public void flipCard(int index) {
-        if (attemptsLeft <= 0 || gameWon || gameLost) return;
-
         Card card = cards.get(index);
-        if (card.isFlipped() || (firstFlippedCard != null && secondFlippedCard != null)) return;
+        if (card.isFlipped() || attemptsLeft <= 0 || firstFlippedCard != null && secondFlippedCard != null) {
+            return;
+        }
 
         card.flip();
 
@@ -39,63 +39,54 @@ public class GameBoard {
             checkMatch();
         }
 
-        notifyObservers();
+        notifyObservers(false);
     }
 
     private void checkMatch() {
         if (firstFlippedCard.getValue() == secondFlippedCard.getValue()) {
             firstFlippedCard.setMatched(true);
             secondFlippedCard.setMatched(true);
-            resetCards(false); // Não precisa virar de volta
+            flippedCount += 2;
+
+            firstFlippedCard = null;
+            secondFlippedCard = null;
+
+            notifyObservers(true);
         } else {
             attemptsLeft--;
             new Thread(() -> {
                 try {
                     Thread.sleep(1000);
-                    resetCards(true); // Vira as cartas de volta
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                firstFlippedCard.flip();
+                secondFlippedCard.flip();
+                firstFlippedCard = null;
+                secondFlippedCard = null;
+                notifyObservers(false);
             }).start();
         }
-
-        if (cards.stream().allMatch(Card::isMatched)) {
-            gameWon = true;
-        } else if (attemptsLeft == 0) {
-            gameLost = true;
-        }
     }
 
-    private void resetCards(boolean flipBack) {
-        if (flipBack) {
-            firstFlippedCard.flip();
-            secondFlippedCard.flip();
-        }
-        firstFlippedCard = null;
-        secondFlippedCard = null;
-        notifyObservers();
-    }
-
-    private void notifyObservers() {
+    private void notifyObservers(boolean matchFound) {
         for (GameBoardObserver observer : observers) {
-            observer.update(false);
+            observer.update(matchFound);
         }
     }
 
-    public List<Card> getCards() {
-        return cards;
+    public boolean isGameWon() {
+        return flippedCount == cards.size();
     }
 
     public int getAttemptsLeft() {
         return attemptsLeft;
     }
 
-    public boolean isGameWon() {
-        return gameWon;
-    }
-
-    public boolean isGameLost() {
-        return gameLost;
+    public List<Card> getCards() {
+        return cards;
     }
 }
+
+
 

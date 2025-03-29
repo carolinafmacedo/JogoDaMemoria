@@ -1,23 +1,26 @@
 package com.jogo.memoria.jogo_da_memoria.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class CardFactory {
-    // Cria a lista de cartas para o jogo
-    public List<Card> createCards() {
-        List<Card> cards = new ArrayList<>();
-        // Gera números únicos de 1 a 8 para os pares
-        for (int i = 1; i <= 8; i++) {
-            cards.add(new Card(i));
-            cards.add(new Card(i)); // Cria dois pares para cada número
-        }
-        // Embaralha as cartas para aleatoriedade
-        Collections.shuffle(cards);
-        return cards;
-    }
+/**
+ * O Factory Method é utilizado aqui para padronizar e centralizar 
+ * a criação das cartas do jogo da memória.
+ *
+ * Em vez de instanciar as cartas diretamente, esta classe abstrata 
+ * define um método que suas subclasses concretas deverão implementar. 
+ * Assim, podemos ter diferentes formas de criar e distribuir as cartas no tabuleiro.
+ * 
+ *Se quisermos mudar a lógica de criação 
+ *(exemplo: diferentes modos de jogo), basta alterar uma subclasse.
+ */
+public abstract class CardFactory {
+    
+    /**
+     * Método abstrato que será implementado pelas subclasses.
+     * Cada implementação pode criar as cartas de uma maneira diferente.
+     *
+     * @return Uma lista de cartas para o jogo.
+     */
+    public abstract List<Card> createCards();
 }
-
-
 

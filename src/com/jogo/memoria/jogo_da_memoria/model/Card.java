@@ -19,15 +19,18 @@ public class Card {
         return flipped;
     }
 
-    public boolean isMatched() {
-        return matched;
+    public void flip() {
+        if (!matched) {
+            flipped = !flipped;
+        }
     }
 
-    public void flip() {
-        flipped = !flipped;
+    public boolean isMatched() {
+        return matched;
     }
 
     public void setMatched(boolean matched) {
         this.matched = matched;
     }
 }
+

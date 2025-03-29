@@ -18,12 +18,12 @@ public class MemoryGameController implements GameBoardObserver {
 
     public void flipCard(int index) {
         gameBoard.flipCard(index);
-        SwingUtilities.invokeLater(() -> gui.updateUI(gameBoard.getCards(), gameBoard.getAttemptsLeft()));
+        SwingUtilities.invokeLater(() -> gui.updateUI());
     }
 
     @Override
     public void update(boolean matchFound) {
-        SwingUtilities.invokeLater(() -> gui.updateUI(gameBoard.getCards(), gameBoard.getAttemptsLeft()));
+        SwingUtilities.invokeLater(() -> gui.updateUI());
     }
 
     public boolean isGameWon() {
@@ -31,7 +31,11 @@ public class MemoryGameController implements GameBoardObserver {
     }
 
     public boolean isGameLost() {
-        return gameBoard.isGameLost();
+        return gameBoard.getAttemptsLeft() <= 0;
+    }
+
+    public GameBoard getGameBoard() {
+        return gameBoard;
     }
 }
 

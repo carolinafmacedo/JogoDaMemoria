@@ -5,7 +5,8 @@ import com.jogo.memoria.jogo_da_memoria.model.Card;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class MemoryGameGUI extends JFrame {
     private MemoryGameController controller;
@@ -14,62 +15,81 @@ public class MemoryGameGUI extends JFrame {
     private JButton[] buttons;
 
     public MemoryGameGUI() {
-        setTitle("Jogo da Memória");
-        setSize(400, 450);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
-
-        boardPanel = new JPanel(new GridLayout(4, 4));
-        add(boardPanel, BorderLayout.CENTER);
-
-        attemptsLabel = new JLabel("Tentativas restantes: 6", SwingConstants.CENTER);
-        add(attemptsLabel, BorderLayout.NORTH);
-        
-        setVisible(true);
+        initializeUI();
     }
 
     public void setController(MemoryGameController controller) {
         this.controller = controller;
     }
 
-    public void initializeUI() {
-        buttons = new JButton[16];
+    private void initializeUI() {
+        setTitle("Jogo da Memória");
+        setSize(400, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        boardPanel = new JPanel(new GridLayout(4, 4));
+        add(boardPanel, BorderLayout.CENTER);
+
+        attemptsLabel = new JLabel("Tentativas restantes: 6");
+        add(attemptsLabel, BorderLayout.NORTH);
+
+        buttons = new JButton[16];  // Criando um array para armazenar os botões
 
         for (int i = 0; i < 16; i++) {
             buttons[i] = new JButton();
             buttons[i].setFont(new Font("Arial", Font.BOLD, 20));
-            buttons[i].setBackground(Color.LIGHT_GRAY);
+            buttons[i].setText("");
             final int index = i;
-            buttons[i].addActionListener(e -> controller.flipCard(index));
+            buttons[i].addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (controller != null) {
+                        controller.flipCard(index);
+                    }
+                }
+            });
             boardPanel.add(buttons[i]);
         }
-        
-        setVisible(true);
     }
 
-    public void updateUI(List<Card> cards, int attemptsLeft) {
-        attemptsLabel.setText("Tentativas restantes: " + attemptsLeft);
+    public void updateUI() {
+        if (controller == null) return;
 
-        for (int i = 0; i < cards.size(); i++) {
-            Card card = cards.get(i);
+        attemptsLabel.setText("Tentativas restantes: " + controller.getGameBoard().getAttemptsLeft());
+
+        for (int i = 0; i < controller.getGameBoard().getCards().size(); i++) {
+            Card card = controller.getGameBoard().getCards().get(i);
+            JButton button = buttons[i];
+
             if (card.isFlipped()) {
-                buttons[i].setText(String.valueOf(card.getValue()));
-                buttons[i].setBackground(card.isMatched() ? Color.GREEN : Color.WHITE);
+                button.setText(String.valueOf(card.getValue()));
+                if (card.isMatched()) {
+                    button.setBackground(Color.GREEN);  // Se for um par correto, fica verde
+                    button.setEnabled(false);
+                }
             } else {
-                buttons[i].setText("");
-                buttons[i].setBackground(Color.LIGHT_GRAY);
+                button.setText("");
+                button.setBackground(null);
+                button.setEnabled(true);
             }
         }
 
         if (controller.isGameWon()) {
-            JOptionPane.showMessageDialog(this, "Parabéns! Você ganhou!");
+            JOptionPane.showMessageDialog(this, "Você ganhou!");
+            disableAllButtons();
         } else if (controller.isGameLost()) {
-            JOptionPane.showMessageDialog(this, "Game Over! Você perdeu!");
+            JOptionPane.showMessageDialog(this, "Você perdeu!");
+            disableAllButtons();
+        }
+    }
+
+    private void disableAllButtons() {
+        for (JButton button : buttons) {
+            button.setEnabled(false);
         }
     }
 }
-
-
 
 
 
