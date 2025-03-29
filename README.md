@@ -24,8 +24,8 @@ O jogo é composto por um tabuleiro 4x4, e o jogador tem um número limitado de 
 2. Factory Pattern 🏭
 - O Factory Pattern foi utilizado para a criação das cartas, centralizando a lógica de criação na classe CardFactory. Isso permite que a criação das cartas seja modular e facilmente extensível.
 
-3. Singleton Pattern (Padrão Singleton) 🔒
-- O Singleton garante que o jogo tenha uma única instância de GameBoard e seja acessível globalmente.
-
-4. Command Pattern (Padrão de Comando) 📜
+3. Command Pattern (Padrão de Comando) 📜
 - O Command Pattern foi aplicado para encapsular ações como "virar uma carta".
+
+4. Singleton Pattern (Padrão Singleton) 🔒
+- O Singleton garante que o jogo tenha uma única instância de GameBoard e seja acessível globalmente.
