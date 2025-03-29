@@ -5,70 +5,71 @@ import com.jogo.memoria.jogo_da_memoria.model.Card;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.List;
 
 public class MemoryGameGUI extends JFrame {
     private MemoryGameController controller;
     private JPanel boardPanel;
     private JLabel attemptsLabel;
+    private JButton[] buttons;
 
-    public MemoryGameGUI(MemoryGameController controller) {
-        this.controller = controller;
-        initializeUI();
-    }
-
-    private void initializeUI() {
+    public MemoryGameGUI() {
         setTitle("Jogo da Memória");
-        setSize(400, 400);
+        setSize(400, 450);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        boardPanel = new JPanel(new GridLayout(4, 4)); // Tabuleiro 4x4
+        boardPanel = new JPanel(new GridLayout(4, 4));
         add(boardPanel, BorderLayout.CENTER);
 
-        attemptsLabel = new JLabel("Tentativas restantes: 6");
-        add(attemptsLabel, BorderLayout.NORTH); // Exibindo as tentativas acima do board
-
-        // Adiciona os botões ao tabuleiro
-        for (int i = 0; i < 16; i++) {
-            JButton button = new JButton();
-            button.setPreferredSize(new Dimension(80, 80));
-            button.setText(""); // Inicialmente, as cartas não têm texto
-            final int index = i;
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    controller.flipCard(index, button); // Virar carta e atualizar a interface
-                    updateUI(); // Atualiza a interface após a ação
-                }
-            });
-            boardPanel.add(button);
-            controller.getGameBoard().addObserverButton(button); // Adiciona o botão à lista de observadores
-        }
-
+        attemptsLabel = new JLabel("Tentativas restantes: 6", SwingConstants.CENTER);
+        add(attemptsLabel, BorderLayout.NORTH);
+        
         setVisible(true);
     }
 
-    private void updateUI() {
-        // Atualiza o label de tentativas
-        attemptsLabel.setText("Tentativas restantes: " + controller.getGameBoard().getAttemptsLeft());
+    public void setController(MemoryGameController controller) {
+        this.controller = controller;
+    }
 
-        // Atualiza os textos dos botões e as cores
-        for (int i = 0; i < controller.getGameBoard().getCards().size(); i++) {
-            Card card = controller.getGameBoard().getCards().get(i);
-            JButton button = (JButton) controller.getGameBoard().getObserverButtons().get(i);
+    public void initializeUI() {
+        buttons = new JButton[16];
 
+        for (int i = 0; i < 16; i++) {
+            buttons[i] = new JButton();
+            buttons[i].setFont(new Font("Arial", Font.BOLD, 20));
+            buttons[i].setBackground(Color.LIGHT_GRAY);
+            final int index = i;
+            buttons[i].addActionListener(e -> controller.flipCard(index));
+            boardPanel.add(buttons[i]);
+        }
+        
+        setVisible(true);
+    }
+
+    public void updateUI(List<Card> cards, int attemptsLeft) {
+        attemptsLabel.setText("Tentativas restantes: " + attemptsLeft);
+
+        for (int i = 0; i < cards.size(); i++) {
+            Card card = cards.get(i);
             if (card.isFlipped()) {
-                button.setText(String.valueOf(card.getValue())); // Exibe o valor
-                button.setEnabled(false); // Desabilita o botão da carta virada
+                buttons[i].setText(String.valueOf(card.getValue()));
+                buttons[i].setBackground(card.isMatched() ? Color.GREEN : Color.WHITE);
             } else {
-                button.setText(""); // Limpa o texto da carta não virada
-                button.setEnabled(true); // Habilita o botão da carta não virada
+                buttons[i].setText("");
+                buttons[i].setBackground(Color.LIGHT_GRAY);
             }
+        }
+
+        if (controller.isGameWon()) {
+            JOptionPane.showMessageDialog(this, "Parabéns! Você ganhou!");
+        } else if (controller.isGameLost()) {
+            JOptionPane.showMessageDialog(this, "Game Over! Você perdeu!");
         }
     }
 }
+
+
 
 
 
