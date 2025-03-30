@@ -1,15 +1,15 @@
 package com.jogo.memoria.jogo_da_memoria.controller;
 
-import com.jogo.memoria.jogo_da_memoria.model.GameBoard;
+import com.jogo.memoria.jogo_da_memoria.model.AbstractGameBoard;
 import javax.swing.JButton;
 
 public class FlipCardCommand implements Command {
-    private GameBoard gameBoard;
+    private AbstractGameBoard gameBoard;
     private int cardIndex;
     private JButton button;
 
-    // Construtor que recebe o GameBoard, o índice da carta e o botão correspondente
-    public FlipCardCommand(GameBoard gameBoard, int cardIndex, JButton button) {
+    // Construtor que recebe o AbstractGameBoard, o índice da carta e o botão correspondente
+    public FlipCardCommand(AbstractGameBoard gameBoard, int cardIndex, JButton button) {
         this.gameBoard = gameBoard;
         this.cardIndex = cardIndex;
         this.button = button;
@@ -18,22 +18,20 @@ public class FlipCardCommand implements Command {
     // Método para executar o comando de virar a carta
     @Override
     public void execute() {
-        // Chama o método flipCard para virar a carta no GameBoard
-        gameBoard.flipCard(cardIndex);
-        
-        // Atualiza a interface gráfica
-        updateButton();
+        gameBoard.flipCard(cardIndex); // Vira a carta no tabuleiro
+        updateButton(); // Atualiza a interface
     }
 
-    // Método para atualizar o texto e a cor do botão com base no estado da carta
+    // Método para atualizar o botão com base no estado da carta
     private void updateButton() {
-        // Verifica o estado da carta (se está virada ou não)
+        // Verifica se a carta foi virada
         if (gameBoard.getCards().get(cardIndex).isFlipped()) {
-            // Se a carta estiver virada, exibe o número no botão
-            button.setText(String.valueOf(gameBoard.getCards().get(cardIndex).getValue()));
+            button.setText(String.valueOf(gameBoard.getCards().get(cardIndex).getValue())); // Mostra o valor da carta
+            button.setBackground(java.awt.Color.CYAN); // Cor ciano para carta virada
         } else {
-            // Se não estiver virada, limpa o texto do botão
-            button.setText("");
+            button.setText(""); // Se a carta não for virada, não mostra o valor
+            button.setBackground(java.awt.Color.GRAY); // Cor cinza para carta não virada
         }
     }
 }
+
