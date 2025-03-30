@@ -1,4 +1,5 @@
 # 🎮 Jogo da Memória
+Criado por Carolina Macedo e Rafael Leal
 
 # 📜 Descrição
 O Jogo da Memória é composto por um tabuleiro que pode ser configurado com diferentes dimensões, como 4x4 (16 cartas) ou 6x6 (36 cartas). O jogador tem um número limitado de tentativas para virar as cartas e encontrar pares ou trios de cartas com números iguais. Desenvolvido como parte da cadeira de PPOO.
