@@ -13,20 +13,25 @@ public class Main {
                     "Modo de Jogo", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
                     null, options, options[0]);
 
-            boolean isTrioMode = choice == 1;
+            // Fecha a aplicação caso o usuário clique em "Cancelar" ou feche a caixa de diálogo
+            if (choice == JOptionPane.CLOSED_OPTION) {
+                System.exit(0);
+            }
+
+            boolean isTrioMode = (choice == 1);
             int gridSize = isTrioMode ? 6 : 4;
 
             // Cria a interface gráfica
             MemoryGameGUI gui = new MemoryGameGUI(gridSize);
+            gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Agora fecha corretamente ao clicar no "X"
 
-            // Cria o controlador de acordo com o gridSize
+            // Cria o controlador e vincula à GUI
             MemoryGameController controller = new MemoryGameController(gridSize, gui);
-
-            // Passa o controlador para a GUI para comunicação entre eles
             gui.setController(controller);
         });
     }
 }
+
 
 
 

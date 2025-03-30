@@ -2,6 +2,7 @@ package com.jogo.memoria.jogo_da_memoria.view;
 
 import com.jogo.memoria.jogo_da_memoria.controller.MemoryGameController;
 import com.jogo.memoria.jogo_da_memoria.controller.FlipCardCommand;
+import com.jogo.memoria.jogo_da_memoria.controller.ResetCommand;
 import com.jogo.memoria.jogo_da_memoria.model.AbstractGameBoard;
 import com.jogo.memoria.jogo_da_memoria.model.Card;
 
@@ -14,10 +15,11 @@ public class MemoryGameGUI extends JFrame {
     private final JPanel boardPanel;
     private final JLabel attemptsLabel;
     private final JButton[] buttons;
+    private final JButton resetButton;
 
     public MemoryGameGUI(int gridSize) {
         this.setTitle("Jogo da Memória");
-        this.setSize(400, 400);
+        this.setSize(400, 450);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
 
@@ -30,13 +32,18 @@ public class MemoryGameGUI extends JFrame {
 
         for (int i = 0; i < gridSize * gridSize; i++) {
             buttons[i] = new JButton();
-            buttons[i].setBackground(Color.GRAY); // Inicialmente as cartas são cinzas
+            buttons[i].setBackground(Color.GRAY);
             buttons[i].setFont(new Font("Arial", Font.PLAIN, 18));
             int finalI = i;
             buttons[i].addActionListener(e -> flipCard(finalI));
             boardPanel.add(buttons[i]);
         }
         this.add(boardPanel, BorderLayout.CENTER);
+
+        // Botão de Reset
+        resetButton = new JButton("Resetar");
+        resetButton.addActionListener(e -> new ResetCommand(controller.getGameBoard(), this).execute());
+        this.add(resetButton, BorderLayout.SOUTH);
 
         controller = new MemoryGameController(gridSize, this);
         this.setVisible(true);
@@ -50,11 +57,10 @@ public class MemoryGameGUI extends JFrame {
         updateAttemptsLabel();
         updateButtons();
 
-        // Verifica se o jogo terminou
         if (gameBoard.isGameWon()) {
-            JOptionPane.showMessageDialog(this, "Você ganhou!");
+            showGameWonMessage();
         } else if (gameBoard.isGameLost()) {
-            JOptionPane.showMessageDialog(this, "Você perdeu!");
+            showGameLostMessage();
         }
     }
 
@@ -71,15 +77,15 @@ public class MemoryGameGUI extends JFrame {
             Card card = cards.get(i);
             
             if (card.isFlipped()) {
-                buttons[i].setText(String.valueOf(card.getValue())); // Exibe o número da carta
-                buttons[i].setBackground(Color.CYAN); // Cartas viradas ficam ciano
+                buttons[i].setText(String.valueOf(card.getValue()));
+                buttons[i].setBackground(Color.CYAN);
 
                 if (card.isMatched()) {
-                    buttons[i].setBackground(Color.GREEN); // Cartas combinadas ficam verdes
+                    buttons[i].setBackground(Color.GREEN);
                 }
             } else {
-                buttons[i].setText(""); // Reseta o texto se a carta não estiver virada
-                buttons[i].setBackground(Color.GRAY); // Cartas não viradas ficam cinzas
+                buttons[i].setText("");
+                buttons[i].setBackground(Color.GRAY);
             }
         }
     }
@@ -96,5 +102,7 @@ public class MemoryGameGUI extends JFrame {
         JOptionPane.showMessageDialog(this, "Você perdeu!");
     }
 }
+
+
 
 
