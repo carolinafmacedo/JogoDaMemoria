@@ -1,25 +1,32 @@
 package com.jogo.memoria.jogo_da_memoria;
 
 import com.jogo.memoria.jogo_da_memoria.controller.MemoryGameController;
-import com.jogo.memoria.jogo_da_memoria.model.CardFactory;
-import com.jogo.memoria.jogo_da_memoria.model.GameBoard;
-import com.jogo.memoria.jogo_da_memoria.model.SimpleCardFactory;
 import com.jogo.memoria.jogo_da_memoria.view.MemoryGameGUI;
+
+import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
-        CardFactory cardFactory = new SimpleCardFactory();  // Usa o Factory Method
-        GameBoard gameBoard = new GameBoard(cardFactory);
-        
-        // Criação da interface gráfica
-        MemoryGameGUI gui = new MemoryGameGUI();
+        SwingUtilities.invokeLater(() -> {
+            String[] options = {"4x4 - Pares (Fácil)", "6x6 - Trios (Difícil)"};
+            int choice = JOptionPane.showOptionDialog(null, "Escolha o modo de jogo:",
+                    "Modo de Jogo", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+                    null, options, options[0]);
 
-        // Passando tanto o gameBoard quanto a GUI para o Controller
-        MemoryGameController controller = new MemoryGameController(gameBoard, gui);
-        
-        // Agora informamos o controller para a GUI
-        gui.setController(controller);
+            boolean isTrioMode = choice == 1;
+            int gridSize = isTrioMode ? 6 : 4;
 
-        gui.setVisible(true);
+            // Cria a interface gráfica
+            MemoryGameGUI gui = new MemoryGameGUI(gridSize);
+
+            // Cria o controlador de acordo com o gridSize
+            MemoryGameController controller = new MemoryGameController(gridSize, gui);
+
+            // Passa o controlador para a GUI para comunicação entre eles
+            gui.setController(controller);
+        });
     }
 }
+
+
+

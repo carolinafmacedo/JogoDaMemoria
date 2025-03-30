@@ -15,14 +15,12 @@ public class Card {
         return value;
     }
 
-    public boolean isFlipped() {
-        return flipped;
+    public void setFlipped(boolean flipped) {
+        this.flipped = flipped;
     }
 
-    public void flip() {
-        if (!matched) {
-            flipped = !flipped;
-        }
+    public boolean isFlipped() {
+        return flipped;
     }
 
     public boolean isMatched() {
@@ -33,4 +31,5 @@ public class Card {
         this.matched = matched;
     }
 }
+
 

@@ -1,43 +1,47 @@
 package com.jogo.memoria.jogo_da_memoria.controller;
 
-import com.jogo.memoria.jogo_da_memoria.model.GameBoard;
-import com.jogo.memoria.jogo_da_memoria.model.GameBoardObserver;
+import com.jogo.memoria.jogo_da_memoria.model.AbstractGameBoard;
 import com.jogo.memoria.jogo_da_memoria.view.MemoryGameGUI;
-
-import javax.swing.*;
+import com.jogo.memoria.jogo_da_memoria.observer.*;
+import com.jogo.memoria.jogo_da_memoria.model.*;
 
 public class MemoryGameController implements GameBoardObserver {
-    private GameBoard gameBoard;
+    private AbstractGameBoard gameBoard;
     private MemoryGameGUI gui;
 
-    public MemoryGameController(GameBoard gameBoard, MemoryGameGUI gui) {
-        this.gameBoard = gameBoard;
+    public MemoryGameController(int gridSize, MemoryGameGUI gui) {
+        if (gridSize == 4) {
+            this.gameBoard = new GameBoard4x4(new CardFactory4x4());
+        } else if (gridSize == 6) {
+            this.gameBoard = new GameBoard6x6(new CardFactory6x6());
+        }
         this.gui = gui;
-        this.gameBoard.addObserver(this);
+        this.gameBoard.addObserver(this); // Add the controller as an observer
     }
 
-    public void flipCard(int index) {
-        gameBoard.flipCard(index);
-        SwingUtilities.invokeLater(() -> gui.updateUI());
+    public AbstractGameBoard getGameBoard() {
+        return gameBoard;
+    }
+
+    public int getRemainingAttempts() {
+        return gameBoard.getAttemptsLeft();
     }
 
     @Override
-    public void update(boolean matchFound) {
-        SwingUtilities.invokeLater(() -> gui.updateUI());
+    public void onCardFlipped() {
+        gui.updateButtons();
+        gui.updateAttemptsLabel();
     }
 
-    public boolean isGameWon() {
-        return gameBoard.isGameWon();
+    @Override
+    public void onGameWon() {
+        gui.showGameWonMessage();
     }
 
-    public boolean isGameLost() {
-        return gameBoard.getAttemptsLeft() <= 0;
-    }
-
-    public GameBoard getGameBoard() {
-        return gameBoard;
+    @Override
+    public void onGameLost() {
+        gui.showGameLostMessage();
     }
 }
-
 
 
