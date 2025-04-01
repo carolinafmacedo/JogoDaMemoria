@@ -1,11 +1,13 @@
 package com.jogo.memoria.jogo_da_memoria.model;
 
+import java.util.Collections;
 import java.util.List;
 
 public class GameBoard6x6 extends AbstractGameBoard {
 
     public GameBoard6x6(CardFactory cardFactory) {
         super(cardFactory, 6); // Tabuleiro 6x6
+        attemptsLeft = 12;
     }
 
     @Override
@@ -18,4 +20,15 @@ public class GameBoard6x6 extends AbstractGameBoard {
     protected int getMaxFlippedCards() {
         return 3; // Para o modo de trios, apenas três cartas podem ser viradas
     }
+    @Override
+	public void reset() {
+		for (Card card : cards) {
+			card.setFlipped(false);
+			card.setMatched(false);
+		}
+		Collections.shuffle(cards);
+		flippedIndices.clear();
+		attemptsLeft = 12;
+		notifyObservers();
+	}
 }

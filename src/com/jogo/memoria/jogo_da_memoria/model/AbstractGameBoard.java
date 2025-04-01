@@ -8,22 +8,26 @@ import com.jogo.memoria.jogo_da_memoria.observer.GameBoardObserver;
 public abstract class AbstractGameBoard {
     protected List<Card> cards;
     protected List<Integer> flippedIndices = new ArrayList<>();
-    protected int attemptsLeft = 10;
+    protected int attemptsLeft = 0;
     private boolean isCheckingMatch = false;
     private List<GameBoardObserver> observers = new ArrayList<>();
 
+    //Cria lista de cartas
     public AbstractGameBoard(CardFactory cardFactory, int size) {
         this.cards = cardFactory.createCards(size);
     }
 
+    // Retorna lista de cartas
     public List<Card> getCards() {
         return cards;
     }
 
+    // Adiciona Observers
     public void addObserver(GameBoardObserver observer) {
         observers.add(observer);
     }
 
+    //Notifica observers 
     public void notifyObservers() {
         for (GameBoardObserver observer : observers) {
             observer.onCardFlipped();
@@ -39,7 +43,8 @@ public abstract class AbstractGameBoard {
             }
         }
     }
-
+    
+    // Vira a carta e chama para notificar observers sobre a carta virada
     public void flipCard(int index) {
         if (isCheckingMatch || flippedIndices.contains(index) || cards.get(index).isMatched()) {
             return;
@@ -107,16 +112,8 @@ public abstract class AbstractGameBoard {
         }
     }
 
-    public void reset() {
-        for (Card card : cards) {
-            card.setFlipped(false);
-            card.setMatched(false);
-        }
-        Collections.shuffle(cards);
-        flippedIndices.clear();
-        attemptsLeft = 10;
-        notifyObservers();
-    }
+    public abstract void reset();
+     
 }
 
 

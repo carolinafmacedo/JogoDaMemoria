@@ -27,8 +27,7 @@ public class MemoryGameGUI extends JFrame {
         boardPanel.setLayout(new GridLayout(gridSize, gridSize));
         buttons = new JButton[gridSize * gridSize];
 
-        attemptsLabel = new JLabel("Tentativas restantes: 10");
-        this.add(attemptsLabel, BorderLayout.NORTH);
+        
 
         for (int i = 0; i < gridSize * gridSize; i++) {
             buttons[i] = new JButton();
@@ -46,6 +45,12 @@ public class MemoryGameGUI extends JFrame {
         this.add(resetButton, BorderLayout.SOUTH);
 
         controller = new MemoryGameController(gridSize, this);
+        
+        // Quantidade de tentativas
+        int attempts = controller.getGameBoard().getAttemptsLeft();
+        attemptsLabel = new JLabel("Tentativas restantes: "+attempts);
+        this.add(attemptsLabel, BorderLayout.NORTH);
+        
         this.setVisible(true);
     }
 
