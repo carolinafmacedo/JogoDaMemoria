@@ -8,7 +8,7 @@ public class CardFactory6x6 implements CardFactory {
     @Override
     public List<Card> createCards(int size) {
         List<Card> cards = new ArrayList<>();
-        int totalTrios = size * size / 3; // Cada conjunto terá 3 cartas iguais
+        int totalTrios = size * size / 3; 
 
         for (int i = 0; i < totalTrios; i++) {
             cards.add(new Card(i + 1));
