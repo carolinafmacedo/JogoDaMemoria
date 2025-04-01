@@ -11,7 +11,7 @@ Modalidade Fácil (4x4 - Pares):
 - Tabuleiro 4x4 com 16 cartas.
 - O jogador deve virar as cartas uma por vez, tentando encontrar pares com o mesmo valor, são 8 pares no total.
 - Cartas iguais permanecem viradas.
-- O jogador possui 6 vidas. Caso vire uma carta de par errado, perde uma vida.
+- O jogador possui 10 vidas. Caso vire uma carta de par errado, perde uma vida.
 - Ao final do jogo, uma mensagem exibe se o jogador venceu ou perdeu.
   
 Modalidade Difícil (6x6 - Trios):
