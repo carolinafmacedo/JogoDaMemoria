@@ -5,6 +5,7 @@ import com.jogo.memoria.jogo_da_memoria.view.MemoryGameGUI;
 
 import javax.swing.*;
 
+//vai verificar tamanho do jogo, e cria o GUI, e memory controller
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
