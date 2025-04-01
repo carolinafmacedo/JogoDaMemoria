@@ -6,7 +6,7 @@ import java.util.List;
 public class GameBoard4x4 extends AbstractGameBoard {
 
 	public GameBoard4x4(CardFactory cardFactory) {
-		super(cardFactory, 4); // Tabuleiro 4x4
+		super(cardFactory, 4); 
 		attemptsLeft = 8;
 	}
 
@@ -18,7 +18,7 @@ public class GameBoard4x4 extends AbstractGameBoard {
 
 	@Override
 	protected int getMaxFlippedCards() {
-		return 2; // Para o modo de pares, apenas duas cartas podem ser viradas
+		return 2;
 	}
 
 	@Override
